@@ -28,24 +28,18 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      //   decoration: BoxDecoration(
-      //   border: Border.all(
-      //       color: Colors.black, //color of border
-      //       width: 2, //width of border
-      //     ),
-      //   borderRadius: BorderRadius.circular(5)
-      // ),
       body: SafeArea(
+        minimum: EdgeInsets.only(bottom: 25),
         child: Center(
           child: Column(
+            
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            
             children: [
-              const SizedBox(height: 50),
-
-              // google button
               const SquareTile(imagePath: 'lib/images/logo.png'),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 10),
 
               // welcome back, you've been missed!
               Text(
