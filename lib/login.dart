@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sahrudaya_app/hello.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'button.dart';
@@ -28,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       };
       if (usernameController.text.contains('@')) {
-        var res = await http.post(Uri.parse("http://192.168.1.6:8000/fdemo/"),
+        var res = await http.post(Uri.parse("http://192.168.1.6:8000/login/"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -58,9 +61,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: SafeArea(
-        minimum: const EdgeInsets.only(bottom: 25),
+        // minimum: const EdgeInsets.only(bottom: 205),
         child: Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -69,72 +71,86 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SquareTile(imagePath: 'lib/images/logo.png'),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                      color: const Color.fromARGB(255, 19, 165, 14),
+                      child: const Center(
+                        child: SquareTile(imagePath: 'lib/images/logo.png'),
+                      )),
+                ),
+                const SizedBox(
+                  height: 100,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    child: Column(children: [
+                      const Text(
+                        'Welcome back you\'ve been missed!',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 126, 44),
+                          fontSize: 16,
+                        ),
+                      ),
 
-                const SizedBox(height: 10),
+                      const SizedBox(height: 25),
 
-                // welcome back, you've been missed!
-                Text(
-                  'Welcome back you\'ve been missed!',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
+                      // username textfield
+                      MyTextField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        controller: usernameController,
+                        hintText: 'Username',
+                        obscureText: false,
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // password textfield
+                      MyTextField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        controller: passwordController,
+                        hintText: 'Password',
+                        obscureText: true,
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      // sign in button
+                      MyButton(
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            sendData((message) {
+                              toastification.show(
+                                context: context,
+                                alignment: Alignment.bottomCenter,
+                                type: ToastificationType.success,
+                                style: ToastificationStyle.flatColored,
+                                showProgressBar: false,
+                                title: Text(message),
+                                autoCloseDuration: const Duration(seconds: 5),
+                                borderRadius: BorderRadius.circular(50),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 70, vertical: 20),
+                              );
+                            });
+                          }
+                        },
+                      ),
+                    ]),
                   ),
-                ),
-
-                const SizedBox(height: 25),
-
-                // username textfield
-                MyTextField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  controller: usernameController,
-                  hintText: 'Username',
-                  obscureText: false,
-                ),
-
-                const SizedBox(height: 10),
-
-                // password textfield
-                MyTextField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  controller: passwordController,
-                  hintText: 'Password',
-                  obscureText: true,
-                ),
-
-                const SizedBox(height: 25),
-
-                // sign in button
-                MyButton(
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      sendData((message) {
-                        toastification.show(
-                          context: context,
-                          alignment: Alignment.bottomCenter,
-                          type: ToastificationType.success,
-                          style: ToastificationStyle.flatColored,
-                          showProgressBar: false,
-                          title: Text(message),
-                          autoCloseDuration: const Duration(seconds: 5),
-                          borderRadius: BorderRadius.circular(50),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 70, vertical: 20),
-                        );
-                      });
-                    }
-                  },
                 ),
               ],
             ),
