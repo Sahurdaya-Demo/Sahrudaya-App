@@ -1,27 +1,58 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:sahrudaya_app/hello.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'button.dart';
 import 'textfield.dart';
 import 'square_tile.dart';
 import 'package:http/http.dart' as http;
+import 'package:toastification/toastification.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  void sendData() async {
-    var data = {
-      "username": usernameController.text,
-      "password": passwordController.text,
-    };
-    var res = await http.post(Uri.parse("http://192.168.1.6:8000/fdemo/"),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(data));
+  void sendData(void Function(String) showToast) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var data = {
+        "email": usernameController.text,
+        "password": passwordController.text,
+      };
+      if (usernameController.text.contains('@')) {
+        var res = await http.post(Uri.parse("http://192.168.1.6:8000/fdemo/"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(data));
+        // final Map<String, dynamic> response = json.decode(res.body);
+        // var msg = response['msg'];
+        if (res.statusCode == 200) {
+          await prefs.setString('email', usernameController.text);
+          if (!mounted) return;
+          // Navigator.of(context).pop();
+          showToast('Logged In Successfully');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Hello()),
+          );
+        } else {
+          showToast('Email And Password Mismatch');
+        }
+      } else {
+        showToast('Provide a valid email address');
+      }
+    } catch (value) {
+      debugPrint('debug:$value');
+    }
   }
 
   @override
@@ -29,52 +60,84 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: SafeArea(
-        minimum: EdgeInsets.only(bottom: 25),
-        child: Center(
-          child: Column(
-            
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            
-            children: [
-              const SquareTile(imagePath: 'lib/images/logo.png'),
+        minimum: const EdgeInsets.only(bottom: 25),
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SquareTile(imagePath: 'lib/images/logo.png'),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              // welcome back, you've been missed!
-              Text(
-                'Welcome back you\'ve been missed!',
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 16,
+                // welcome back, you've been missed!
+                Text(
+                  'Welcome back you\'ve been missed!',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 16,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 25),
+                const SizedBox(height: 25),
 
-              // username textfield
-              MyTextField(
-                controller: usernameController,
-                hintText: 'Username',
-                obscureText: false,
-              ),
+                // username textfield
+                MyTextField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  controller: usernameController,
+                  hintText: 'Username',
+                  obscureText: false,
+                ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              // password textfield
-              MyTextField(
-                controller: passwordController,
-                hintText: 'Password',
-                obscureText: true,
-              ),
+                // password textfield
+                MyTextField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  controller: passwordController,
+                  hintText: 'Password',
+                  obscureText: true,
+                ),
 
-              const SizedBox(height: 25),
+                const SizedBox(height: 25),
 
-              // sign in button
-              MyButton(
-                onTap: sendData,
-              ),
-            ],
+                // sign in button
+                MyButton(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      sendData((message) {
+                        toastification.show(
+                          context: context,
+                          alignment: Alignment.bottomCenter,
+                          type: ToastificationType.success,
+                          style: ToastificationStyle.flatColored,
+                          showProgressBar: false,
+                          title: Text(message),
+                          autoCloseDuration: const Duration(seconds: 5),
+                          borderRadius: BorderRadius.circular(50),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 70, vertical: 20),
+                        );
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
