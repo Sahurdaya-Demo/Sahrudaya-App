@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sahrudaya_app/login.dart';
-
+import 'cform.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: Cform(),
     );
   }
 }
