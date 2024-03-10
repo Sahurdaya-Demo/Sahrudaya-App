@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sahrudaya_app/hello.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'button.dart';
 import 'textfield.dart';
-import 'square_tile.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
 
@@ -31,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       };
       if (usernameController.text.contains('@')) {
-        var res = await http.post(Uri.parse("http://192.168.1.6:8000/login/"),
+        var res = await http.post(Uri.parse("http://192.168.1.8:8000/login/"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -60,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         // minimum: const EdgeInsets.only(bottom: 205),
@@ -74,14 +73,20 @@ class _LoginPageState extends State<LoginPage> {
                 Expanded(
                   flex: 1,
                   child: Container(
-                      color: const Color.fromARGB(255, 19, 165, 14),
-                      child: const Center(
-                        child: SquareTile(imagePath: 'lib/images/logo.png'),
+                      margin: EdgeInsets.only(bottom: screenHeight / 20),
+                      color: const Color.fromRGBO(15, 150, 83, 1),
+                      child: Center(
+                        child: Image.asset(
+                          'lib/images/logo.png',
+                          height: 170,
+                          width: 170,
+                          fit: BoxFit.contain,
+                        ),
                       )),
                 ),
-                const SizedBox(
-                  height: 100,
-                ),
+                // const SizedBox(
+                //   height: sheight*0.5,
+                // ),
                 Expanded(
                   flex: 2,
                   child: Container(
@@ -125,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                       ),
 
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 15),
 
                       // sign in button
                       MyButton(
@@ -148,6 +153,56 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           }
                         },
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(top: screenHeight / 40),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Show a popup or dialog for entering email
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10.0), // Adjust the value as needed
+                                  ),
+                                  title: const Text('Enter Your Email'),
+                                  content: const TextField(
+                                    decoration:
+                                        InputDecoration(hintText: 'Email'),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Handle email submission
+                                        // You can add your logic here
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
+                                      },
+                                      child: const Text('Submit'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text(
+                            'Forgot password?',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 19, 165, 14),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                       ),
                     ]),
                   ),
