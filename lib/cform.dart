@@ -1,13 +1,9 @@
-
+import 'dart:convert';
 import 'dart:developer';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-
-
-// import 'package:date_field/date_field.dart';
-// import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-
+import 'package:http/http.dart' as http;
 class Cform extends StatefulWidget {
   const Cform({super.key});
   @override
@@ -15,11 +11,23 @@ class Cform extends StatefulWidget {
   
 }
  class _MyFormState extends State<Cform> {
+  String email = '';
+  @override
+  void initState() {
+    super.initState();
+    _loadValueFromSharedPreferences();
+  }
+   Future<void> _loadValueFromSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      email = prefs.getString('email') ?? 'Default Value';
+    });
+  }
   
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // var enDatesFuture = initializeDateFormatting('en-us', null);
   var date=DateTime.now().add(const Duration(days: 10));
-  var myFormat = DateFormat('d-MM-yyyy');
+  var myFormat = DateFormat('yyyy-MM-dd');
   final _datecontroller = TextEditingController();
   final _placecontroller = TextEditingController();
   final _namecontroller = TextEditingController();
@@ -54,9 +62,11 @@ class Cform extends StatefulWidget {
     });
   }
 
-  void _submitForm() {
+  void _submitForm() async{
     if (_formKey.currentState!.validate()) {
       var data = {
+      "nameofcounsellor":email.toString(),
+      "email":email.toString(),
       "date": _datecontroller.text,
       "place_of_counselling": _placecontroller.text,
       "name": _namecontroller.text,
@@ -80,8 +90,15 @@ class Cform extends StatefulWidget {
       "remarks":_remarkscontroller.text,
       "status":_statuscontroller.text
     };
+     var res = await http.post(Uri.parse("http://192.168.1.10:8000/formsubmit/"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(data));
+            log(res.body.toString());
     }
-    // log(_datecontroller.text);
+    
+    log(_datecontroller.text);
   }
 
   @override

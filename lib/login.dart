@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sahrudaya_app/hello.dart';
+import 'package:sahrudaya_app/cform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'button.dart';
 import 'textfield.dart';
@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       };
       if (usernameController.text.contains('@')) {
-        var res = await http.post(Uri.parse("http://192.168.1.6:8000/login/"),
+        var res = await http.post(Uri.parse("http://192.168.1.10:8000/login/"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
           showToast('Logged In Successfully');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const Hello()),
+            MaterialPageRoute(builder: (context) => const Cform()),
           );
         } else {
           showToast('Email And Password Mismatch');
