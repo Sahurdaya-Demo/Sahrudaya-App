@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:toastification/toastification.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 class Cform extends StatefulWidget {
   const Cform({super.key});
   @override
@@ -64,8 +65,7 @@ class _MyFormState extends State<Cform> {
     });
   }
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
+  void _submitForm(void Function(String) showToast) async {
       var data = {
         "nameofcounsellor": email.toString(),
         "email": email.toString(),
@@ -93,22 +93,57 @@ class _MyFormState extends State<Cform> {
         "status": _statuscontroller.text
       };
       var res =
-          await http.post(Uri.parse("http://192.168.1.8:8000/formsubmit/"),
+          await http.post(Uri.parse("http://192.168.1.10:8000/formsubmit/"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: jsonEncode(data));
-      log(res.body.toString());
-    }
+            if(res.statusCode == 201){
+              showToast("Data Submitted Successfully");
+              date=DateTime.now().add(const Duration(days: 10));
+              _formKey.currentState?.reset();
+              _datecontroller.clear();
+              _namecontroller.clear();
+              _agecontroller.clear();
+              _religioncontroller.clear();
+              _fEducationcontroller.clear();
+              _fOccupationcontroller.clear();
+              _mEducationcontroller.clear();
+              _mOccupationcontroller.clear();
+              _problemcontroller.clear();
+              _historycontroller.clear();
+              _interventioncontroller.clear();
+              _challengescontroller.clear();
+              _sessioncontroller.clear();
+              _referralcontroller.clear();
+              _outcomecontroller.clear();
+              _remarkscontroller.clear();
 
-    log(_datecontroller.text);
+
+            }else{
+              showToast("Failed to submit Data");
+            }
   }
+  
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(
+        const Color.fromARGB(255, 165, 214, 167));
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Form'),
+         backgroundColor:Colors.green[200],
+        title: const Text('Counsellor Form'),
+         actions: <Widget>[
+    TextButton(
+      
+      style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 255, 255, 255)),
+        ),
+        onPressed: () { },
+        child: Text('Logout'),
+    ),
+  ],
       ),
       backgroundColor: Colors.green[200],
       body: SingleChildScrollView(
@@ -542,8 +577,26 @@ class _MyFormState extends State<Cform> {
                 ),
               ),
               ElevatedButton(
-                onPressed: _submitForm,
+                onPressed:(){
+                   if (_formKey.currentState!.validate()){
+                    _submitForm((message) {
+                              toastification.show(
+                                context: context,
+                                alignment: Alignment.bottomCenter,
+                                type: ToastificationType.success,
+                                style: ToastificationStyle.flatColored,
+                                showProgressBar: false,
+                                title: Text(message),
+                                autoCloseDuration: const Duration(seconds: 5),
+                                borderRadius: BorderRadius.circular(50),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 70, vertical: 20),
+                              );
+                            });
+                   }
+                },
                 child: const Text('Submit'),
+                
               ),
             ],
           ),

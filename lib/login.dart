@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       };
       if (usernameController.text.contains('@')) {
-        var res = await http.post(Uri.parse("http://192.168.1.8:8000/login/"),
+        var res = await http.post(Uri.parse("http://192.168.1.10:8000/login/"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
