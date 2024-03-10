@@ -4,29 +4,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+
 class Cform extends StatefulWidget {
   const Cform({super.key});
   @override
   State<Cform> createState() => _MyFormState();
-  
 }
- class _MyFormState extends State<Cform> {
+
+class _MyFormState extends State<Cform> {
   String email = '';
   @override
   void initState() {
     super.initState();
     _loadValueFromSharedPreferences();
   }
-   Future<void> _loadValueFromSharedPreferences() async {
+
+  Future<void> _loadValueFromSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       email = prefs.getString('email') ?? 'Default Value';
     });
   }
-  
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // var enDatesFuture = initializeDateFormatting('en-us', null);
-  var date=DateTime.now().add(const Duration(days: 10));
+  var date = DateTime.now().add(const Duration(days: 10));
   var myFormat = DateFormat('yyyy-MM-dd');
   final _datecontroller = TextEditingController();
   final _placecontroller = TextEditingController();
@@ -41,14 +43,14 @@ class Cform extends StatefulWidget {
   final _fOccupationcontroller = TextEditingController();
   final _mEducationcontroller = TextEditingController();
   final _mOccupationcontroller = TextEditingController();
-  final _problemcontroller =  TextEditingController();
-  final _historycontroller =  TextEditingController();
-  final _interventioncontroller =  TextEditingController();
-  final _challengescontroller =  TextEditingController();
+  final _problemcontroller = TextEditingController();
+  final _historycontroller = TextEditingController();
+  final _interventioncontroller = TextEditingController();
+  final _challengescontroller = TextEditingController();
   final _sessioncontroller = TextEditingController();
-  final _referralcontroller =  TextEditingController();
-  final _outcomecontroller =  TextEditingController();
-  final _remarkscontroller =  TextEditingController();
+  final _referralcontroller = TextEditingController();
+  final _outcomecontroller = TextEditingController();
+  final _remarkscontroller = TextEditingController();
   final _statuscontroller = TextEditingController();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -58,46 +60,47 @@ class Cform extends StatefulWidget {
         lastDate: DateTime(2101));
     setState(() {
       date = picked ?? date;
-      _datecontroller.text=myFormat.format(date).toString();
+      _datecontroller.text = myFormat.format(date).toString();
     });
   }
 
-  void _submitForm() async{
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       var data = {
-      "nameofcounsellor":email.toString(),
-      "email":email.toString(),
-      "date": _datecontroller.text,
-      "place_of_counselling": _placecontroller.text,
-      "name": _namecontroller.text,
-      "age":_agecontroller.text,
-      "gender" : _gendercontroller.text,
-      "finacial_status":_finStatuscontroller.text,
-      "marital_status":_maritalStatuscontroller.text,
-      "school":_schoolcontroller.text,
-      "religion":_religioncontroller.text,
-      "fathers_education":_fEducationcontroller.text,
-      "fathers_occupation":_fOccupationcontroller.text,
-      "mothers_education":_mEducationcontroller.text,
-      "mothers_occupation":_mOccupationcontroller.text,
-      "problem":_problemcontroller.text,
-      "history_of_problem":_historycontroller.text,
-      "intervention":_interventioncontroller.text,
-      "challenges_by_counsellor":_challengescontroller.text,
-      "number_of_followup_sections":_sessioncontroller.text,
-      "referral_service":_referralcontroller.text,
-      "outcome":_outcomecontroller.text,
-      "remarks":_remarkscontroller.text,
-      "status":_statuscontroller.text
-    };
-     var res = await http.post(Uri.parse("http://192.168.1.10:8000/formsubmit/"),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(data));
-            log(res.body.toString());
+        "nameofcounsellor": email.toString(),
+        "email": email.toString(),
+        "date": _datecontroller.text,
+        "place_of_counselling": _placecontroller.text,
+        "name": _namecontroller.text,
+        "age": _agecontroller.text,
+        "gender": _gendercontroller.text,
+        "finacial_status": _finStatuscontroller.text,
+        "marital_status": _maritalStatuscontroller.text,
+        "school": _schoolcontroller.text,
+        "religion": _religioncontroller.text,
+        "fathers_education": _fEducationcontroller.text,
+        "fathers_occupation": _fOccupationcontroller.text,
+        "mothers_education": _mEducationcontroller.text,
+        "mothers_occupation": _mOccupationcontroller.text,
+        "problem": _problemcontroller.text,
+        "history_of_problem": _historycontroller.text,
+        "intervention": _interventioncontroller.text,
+        "challenges_by_counsellor": _challengescontroller.text,
+        "number_of_followup_sections": _sessioncontroller.text,
+        "referral_service": _referralcontroller.text,
+        "outcome": _outcomecontroller.text,
+        "remarks": _remarkscontroller.text,
+        "status": _statuscontroller.text
+      };
+      var res =
+          await http.post(Uri.parse("http://192.168.1.8:8000/formsubmit/"),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(data));
+      log(res.body.toString());
     }
-    
+
     log(_datecontroller.text);
   }
 
@@ -109,19 +112,19 @@ class Cform extends StatefulWidget {
       ),
       backgroundColor: Colors.green[200],
       body: SingleChildScrollView(
-        padding:const  EdgeInsets.all(16.0),
-        
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Card(
                 // elevation: 5.0,
-                
+
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(
+                      top: 16.0, bottom: 16.0, left: 14.0, right: 14.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -133,81 +136,75 @@ class Cform extends StatefulWidget {
                         readOnly: true,
                         controller: _datecontroller,
                         decoration: InputDecoration(
-
-                        hintText: ('${myFormat.format(date)}'),
-                          ),
-                        onTap: () =>  _selectDate(context),
+                          hintText: ('${myFormat.format(date)}'),
+                        ),
+                        onTap: () => _selectDate(context),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            
                             return 'Please select a date';
-                            
                           }
                           return null;
                         },
                       ),
-                      
-                     
                       const SizedBox(height: 16.0),
                       const Text(
                         'Place of Counselling',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                     DropdownButtonFormField(
+                      DropdownButtonFormField(
                         onChanged: (value) {
                           setState(() {
                             _placecontroller.text = value.toString();
                           });
                         },
-                        
                         items: const [
                           DropdownMenuItem(
                             value: 'Vypin-Rajagiri Sea Shore School',
-                            child:  Text('Vypin-Rajagiri Sea Shore School'),
+                            child: Text('Vypin-Rajagiri Sea Shore School'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Kakkanad',
-                            child:  Text('Kakkanad'),
+                            child: Text('Kakkanad'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Thevara-SH College(East Campus)',
-                            child:  Text('Thevara-SH College(East Campus)'),
+                            child: Text('Thevara-SH College(East Campus)'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Thevara-Higher Secondary School',
-                            child:  Text('Thevara-Higher Secondary School'),
+                            child: Text('Thevara-Higher Secondary School'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Thevara-SH UP',
-                            child:  Text('Thevara-SH UP'),
+                            child: Text('Thevara-SH UP'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Thevara-SH High School',
-                            child:  Text('Thevara-SH High School'),
+                            child: Text('Thevara-SH High School'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Karukutty-Christ the King monastery Church',
-                            child:  Text('Karukutty-Christ the King monastery Church'),
+                            child: Text('Karukutty-Christ '),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Kanjoor',
-                            child:  Text('Kanjoor'),
+                            child: Text('Kanjoor'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Eloor-SHJ UP School',
-                            child:  Text('Eloor-SHJ UP School'),
+                            child: Text('Eloor-SHJ UP School'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Kottarapalli-Amala Public School',
-                            child:  Text('Kottarapalli-Amala Public School'),
+                            child: Text('Kottarapalli-Amala Public School'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Manappuram-St Teresas High School',
-                            child:  Text('Manappuram-St Teresas High School'),
+                            child: Text('Manappuram-St Teresas High School'),
                           ),
-                           DropdownMenuItem(
+                          DropdownMenuItem(
                             value: 'Pothy',
-                            child:  Text('Pothy'),
+                            child: Text('Pothy'),
                           ),
                           // Add other options here
                         ],
@@ -239,7 +236,6 @@ class Cform extends StatefulWidget {
                         decoration: const InputDecoration(labelText: 'Name'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            
                             return 'Please enter name';
                           }
                           return null;
@@ -247,7 +243,7 @@ class Cform extends StatefulWidget {
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
-                        controller:_agecontroller,
+                        controller: _agecontroller,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(labelText: 'Age'),
                         validator: (value) {
@@ -266,10 +262,8 @@ class Cform extends StatefulWidget {
                         },
                         items: const [
                           DropdownMenuItem(
-                           
-                            value: 'Male', 
+                            value: 'Male',
                             child: Text('Male'),
-
                           ),
                           DropdownMenuItem(
                             value: 'Female',
@@ -278,10 +272,9 @@ class Cform extends StatefulWidget {
                           DropdownMenuItem(
                             value: 'Others',
                             child: Text('Others'),
-                            
                           ),
                         ],
-                        decoration: const  InputDecoration(labelText: 'Gender'),
+                        decoration: const InputDecoration(labelText: 'Gender'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please select  gender';
@@ -296,19 +289,18 @@ class Cform extends StatefulWidget {
                             _finStatuscontroller.text = value.toString();
                           });
                         },
-                         items: const [
+                        items: const [
                           DropdownMenuItem(
-                           
-                            value: 'APL', 
+                            value: 'APL',
                             child: Text('APL'),
-
                           ),
                           DropdownMenuItem(
                             value: 'BPL',
                             child: Text('BPL'),
                           ),
                         ],
-                        decoration: const InputDecoration(labelText: 'Family Financial Status'),
+                        decoration: const InputDecoration(
+                            labelText: 'Family Financial Status'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter family financial status';
@@ -325,37 +317,32 @@ class Cform extends StatefulWidget {
                         },
                         items: const [
                           DropdownMenuItem(
-                            
                             value: 'Married',
                             child: Text('Married'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Single',
                             child: Text('Single'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Divorcee',
                             child: Text('Divorcee'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Widower',
                             child: Text('Widower'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Widow',
                             child: Text('Widow'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Separated',
                             child: Text('Separated'),
                           ),
                         ],
-                        decoration: const InputDecoration(labelText: 'Marital Status'),
+                        decoration:
+                            const InputDecoration(labelText: 'Marital Status'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please select marital status';
@@ -372,17 +359,14 @@ class Cform extends StatefulWidget {
                         },
                         items: const [
                           DropdownMenuItem(
-                            
                             value: 'Government',
                             child: Text('Government'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Aided',
                             child: Text('Aided'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Private',
                             child: Text('Private'),
                           ),
@@ -393,7 +377,8 @@ class Cform extends StatefulWidget {
                       TextFormField(
                         controller: _religioncontroller,
                         maxLength: 20,
-                        decoration: const InputDecoration(labelText: 'Religion'),
+                        decoration:
+                            const InputDecoration(labelText: 'Religion'),
                       ),
                       const SizedBox(height: 16.0),
                       // Add other personal details fields similarly
@@ -415,27 +400,31 @@ class Cform extends StatefulWidget {
                       TextFormField(
                         controller: _fEducationcontroller,
                         maxLength: 25,
-                        decoration: const InputDecoration(labelText: "Father's Education"),
+                        decoration: const InputDecoration(
+                            labelText: "Father's Education"),
                       ),
-                     const  SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _fOccupationcontroller,
                         maxLength: 25,
-                        decoration: const InputDecoration(labelText: "Father's Occupation"),
+                        decoration: const InputDecoration(
+                            labelText: "Father's Occupation"),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _mEducationcontroller,
                         maxLength: 25,
-                        decoration: const InputDecoration(labelText: "Mother's Education"),
+                        decoration: const InputDecoration(
+                            labelText: "Mother's Education"),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _mOccupationcontroller,
                         maxLength: 25,
-                        decoration: const InputDecoration(labelText: "Mother's Occupation"),
+                        decoration: const InputDecoration(
+                            labelText: "Mother's Occupation"),
                       ),
-                     const SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       // Add other family details fields similarly
                     ],
                   ),
@@ -457,7 +446,7 @@ class Cform extends StatefulWidget {
                         maxLines: 5,
                         maxLength: 200,
                         decoration: const InputDecoration(labelText: 'Problem'),
-                         validator: (value) {
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please Enter the probelm';
                           }
@@ -466,43 +455,48 @@ class Cform extends StatefulWidget {
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
-                         controller: _historycontroller,
+                        controller: _historycontroller,
                         maxLines: 6,
                         maxLength: 500,
-                        decoration: const InputDecoration(labelText: 'History of the Problem'),
+                        decoration: const InputDecoration(
+                            labelText: 'History of the Problem'),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _interventioncontroller,
                         maxLength: 100,
                         maxLines: 3,
-                        decoration:const InputDecoration(labelText: 'Intervention'),
+                        decoration:
+                            const InputDecoration(labelText: 'Intervention'),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _challengescontroller,
                         maxLines: 4,
                         maxLength: 200,
-                        decoration: const InputDecoration(labelText: 'Challenges by Counsellor'),
+                        decoration: const InputDecoration(
+                            labelText: 'Challenges by Counsellor'),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _sessioncontroller,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Number of Follow-up Sessions'),
-                         validator: (value) {
+                        decoration: const InputDecoration(
+                            labelText: 'Number of Follow-up Sessions'),
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter number of follow-up sessions';
                           }
                           return null;
                         },
                       ),
-                     const SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _referralcontroller,
                         maxLines: 3,
                         maxLength: 100,
-                        decoration: const InputDecoration(labelText: 'Referral Service'),
+                        decoration: const InputDecoration(
+                            labelText: 'Referral Service'),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
@@ -522,17 +516,15 @@ class Cform extends StatefulWidget {
                       DropdownButtonFormField(
                         onChanged: (value) {
                           setState(() {
-                             _statuscontroller.text = value.toString();
+                            _statuscontroller.text = value.toString();
                           });
                         },
                         items: const [
                           DropdownMenuItem(
-                            
                             value: 'Pending',
                             child: Text('Pending'),
                           ),
                           DropdownMenuItem(
-                            
                             value: 'Completed',
                             child: Text('Completed'),
                           ),
@@ -560,6 +552,3 @@ class Cform extends StatefulWidget {
     );
   }
 }
-
-
- 

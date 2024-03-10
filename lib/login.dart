@@ -34,9 +34,9 @@ class _LoginPageState extends State<LoginPage> {
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: jsonEncode(data));
-        // final Map<String, dynamic> response = json.decode(res.body);
-        // var msg = response['msg'];
-        if (res.statusCode == 200) {
+        final Map<String, dynamic> response = json.decode(res.body);
+        var msg = response['msg'];
+        if (msg == 'Login Success') {
           await prefs.setString('email', usernameController.text);
           if (!mounted) return;
           // Navigator.of(context).pop();
